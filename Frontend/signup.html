@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Swasth Sarthi | Signup</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    :root {
+      --primary: #256b3b;
+      --secondary: #3390c6;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --gray: #6c757d;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+      max-width: 1100px;
+      background-color: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .left-panel {
+      flex: 1;
+      background: linear-gradient(135deg, rgba(37, 107, 59, 0.9) 0%, rgba(51, 144, 198, 0.9) 100%);
+      color: white;
+      padding: 50px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .right-panel {
+      flex: 1.2;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo i {
+      margin-right: 10px;
+      font-size: 32px;
+    }
+
+    .tagline {
+      font-size: 18px;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    .features {
+      list-style: none;
+      margin-top: 30px;
+    }
+
+    .features li {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .features i {
+      margin-right: 10px;
+      color: #a8e6cf;
+    }
+
+    .form-container {
+      width: 100%;
+    }
+
+    .form-header {
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .form-header h1 {
+      font-size: 32px;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+
+    .form-header p {
+      color: var(--gray);
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 3px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    .input-with-icon {
+      position: relative;
+    }
+
+    .input-with-icon i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px 10px 40px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--secondary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(51, 144, 198, 0.2);
+    }
+
+    .gender-group {
+      display: flex;
+      gap: 20px;
+    }
+
+    .gender-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-input-wrapper input[type=file] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .file-input-btn {
+      display: block;
+      padding: 12px 15px;
+      background-color: #f0f0f0;
+      border: 1px dashed #ccc;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      color: var(--gray);
+      transition: all 0.3s ease;
+    }
+
+    .file-input-btn:hover {
+      background-color: #e6e6e6;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      border: none;
+      padding: 15px;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-footer {
+      text-align: center;
+      color: var(--gray);
+      margin-top: 15px;
+    }
+
+    .form-footer a {
+      color: var(--secondary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .form-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left-panel">
+      <div class="logo"><i class="fas fa-heartbeat"></i> Swasth Sarthi</div>
+      <p class="tagline">Join Swasth Sarthi and manage your health records easily.</p>
+      <ul class="features">
+        <li><i class="fas fa-check-circle"></i> Online doctor consultation</li>
+        <li><i class="fas fa-check-circle"></i> Prescription uploads</li>
+        <li><i class="fas fa-check-circle"></i> Appointment management</li>
+      </ul>
+    </div>
+
+    <div class="right-panel">
+      <div class="form-container">
+        <div class="form-header">
+          <h1>Create your <span style="color:#18739E;">Swasth Sarthi</span> Account</h1>
+          <p>Sign up to begin your healthcare journey</p>
+        </div>
+
+        <form id="signup-form" enctype="multipart/form-data">
+          <div class="form-group">
+            <label>Username</label>
+            <div class="input-with-icon">
+              <i class="fas fa-user"></i>
+              <input type="text" id="username" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <div class="input-with-icon">
+              <i class="fas fa-envelope"></i>
+              <input type="email" id="email" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Phone</label>
+            <div class="input-with-icon">
+              <i class="fas fa-phone"></i>
+              <input type="text" id="phone" class="form-control" required maxlength="10">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Gender</label>
+            <div class="gender-group">
+              <label class="gender-option"><input type="radio" name="gender" value="male" required> Male</label>
+              <label class="gender-option"><input type="radio" name="gender" value="female"> Female</label>
+              <label class="gender-option"><input type="radio" name="gender" value="other"> Other</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Age</label>
+            <div class="input-with-icon">
+              <i class="fas fa-calendar"></i>
+              <input type="number" id="age" class="form-control" required min="1" max="120">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Password</label>
+            <div class="input-with-icon">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="password" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Confirm Password</label>
+            <div class="input-with-icon">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="confirm-password" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Prescription Upload (optional)</label>
+            <div class="file-input-wrapper">
+              <label class="file-input-btn">Choose File</label>
+              <input type="file" id="prescription" accept=".jpg,.png,.pdf">
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">Create Account</button>
+
+          <div class="form-footer">
+            Already have an account? <a href="login.html">Sign in</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:5000/api/auth";
+
+    document.getElementById("signup-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData();
+      formData.append("username", document.getElementById("username").value);
+      formData.append("email", document.getElementById("email").value);
+      formData.append("phone", document.getElementById("phone").value);
+      formData.append("gender", document.querySelector("input[name='gender']:checked").value);
+      formData.append("age", document.getElementById("age").value);
+      formData.append("password", document.getElementById("password").value);
+
+      const confirmPassword = document.getElementById("confirm-password").value;
+      if (confirmPassword !== document.getElementById("password").value) {
+        return alert("❌ Passwords do not match!");
+      }
+
+      const file = document.getElementById("prescription").files[0];
+      if (file) formData.append("prescription", file);
+
+      try {
+        const res = await fetch(`${API_URL}/register`, {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Signup failed");
+
+        alert("✅ Registered successfully!");
+        window.location.href = "login.html";
+      } catch (err) {
+        alert("❌ " + err.message);
+      }
+    });
+  </script>
+</body>
+</html>
+
+

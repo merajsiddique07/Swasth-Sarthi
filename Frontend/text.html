@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Local PDF → OpenAI (testing only)</title>
+  <style>
+    body{font-family:system-ui,Arial;padding:20px;background:#f6f8fb}
+    .card{max-width:860px;margin:18px auto;padding:18px;border-radius:10px;background:#fff;box-shadow:0 6px 22px rgba(20,30,60,0.08)}
+    h2{margin:0 0 8px}
+    input,button,textarea{font-size:14px}
+    textarea{width:100%;height:220px;margin-top:10px;white-space:pre-wrap}
+    .status{margin-top:8px;color:#333}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .field{background:#f3f7fb;padding:10px;border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Local test: Extract PDF → OpenAI Chat API</h2>
+    <p><b>For local testing only.</b> Paste your OpenAI API key in the JS below (see warning). If you need a safe production setup, use a server proxy instead.</p>
+
+    <input id="pdfFile" type="file" accept="application/pdf" />
+    <br>
+    <label style="display:block;margin-top:10px">OpenAI API key (local only):</label>
+    <input id="apiKeyInput" type="text" placeholder="sk-..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc" />
+    <br>
+    <button id="analyzeBtn" style="margin-top:12px;padding:10px 16px">Upload & Analyze</button>
+    <div class="status" id="status">Status: waiting</div>
+
+    <div style="height:12px"></div>
+    <div class="grid">
+      <div>
+        <h3>Parsed results (variables)</h3>
+        <div id="vars" class="field">No result yet</div>
+      </div>
+      <div>
+        <h3>Raw model output</h3>
+        <textarea id="rawOutput" readonly placeholder="Model raw output will appear here..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- pdf.js from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+  <script>
+  // pdf.js worker (match version)
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+
+  const pdfFileEl = document.getElementById('pdfFile');
+  const analyzeBtn = document.getElementById('analyzeBtn');
+  const statusEl = document.getElementById('status');
+  const rawOutputEl = document.getElementById('rawOutput');
+  const varsEl = document.getElementById('vars');
+  const apiKeyInput = document.getElementById('apiKeyInput');
+
+  // variables to hold outcomes
+  let weekOfPregnancy = "";
+  let babySizeSentence = "";
+  let heartRate = "";
+  let babyLength = "";
+  let weight = "";
+  let recommendedMovies = [];
+  let nutritionTips = [];
+  let physicalActivities = [];
+
+  // Extract text from PDF (returns a single string)
+  async function extractTextFromPDF(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let text = "";
+    for (let i = 1; i <= pdf.numPages; i++) {
+      statusEl.textContent = `Extracting page ${i}/${pdf.numPages}...`;
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const pageText = content.items.map(it => it.str).join(' ');
+      text += `\n\n--- PAGE ${i} ---\n\n` + pageText;
+    }
+    return text.trim();
+  }
+
+  // Build prompt asking model to return strict JSON with keys you need
+  function buildPrompt(documentText) {
+    return `You are a medical-document assistant. Analyze ONLY the text inside DOCUMENT below and return a STRICT JSON object (no extra words) with exactly these keys:
+"weekOfPregnancy","babySizeSentence","heartRate","babyLength","weight","recommendedMovies","nutritionTips","physicalActivities".
+
+- weekOfPregnancy: short string like "22 weeks"
+- babySizeSentence: a two-line sentence about baby size and organ development for that week
+- heartRate: short string like "140 bpm" or "120-160 bpm"
+- babyLength: include units, e.g., "27 cm"
+- weight: include units, e.g., "430 g" or "1.2 kg"
+- recommendedMovies: array of max 5 Bollywood movie titles (strings)
+- nutritionTips: array of 3 concise tips
+- physicalActivities: array of 3 concise safe activities for pregnancy
+
+If a value is not present in the document, return "Not specified" (for strings) or [] (for arrays). DOCUMENT:
+\"\"\"${documentText}\"\"\"
+Return only valid JSON.`;
+  }
+
+  // Direct browser call to OpenAI Chat Completions (LOCAL TESTING ONLY)
+  async function callOpenAIDirect(apiKey, promptText) {
+    // Endpoint for Chat Completions
+    const endpoint = "https://api.openai.com/v1/chat/completions";
+
+    const body = {
+      model: "gpt-4o-mini",  // choose an available model you have access to; change if needed
+      messages: [
+        { role: "system", content: "You are a concise medical document analyst. Return JSON only when asked." },
+        { role: "user", content: promptText }
+      ],
+      temperature: 0.0,
+      max_tokens: 800
+    };
+
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + apiKey,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(`OpenAI API error ${res.status}: ${txt}`);
+    }
+
+    const j = await res.json();
+    // Most common path: choices[0].message.content
+    const modelText = j?.choices?.[0]?.message?.content ?? JSON.stringify(j);
+    return modelText;
+  }
+
+  // helper: robust JSON parse (extracts JSON substring if model added commentary)
+  function robustParseJSON(s) {
+    if (!s) return null;
+    try { return JSON.parse(s); } catch (e) {
+      const m = s.match(/\{[\s\S]*\}/);
+      if (m) {
+        try { return JSON.parse(m[0]); } catch (e2) { return null; }
+      }
+      return null;
+    }
+  }
+
+  // update UI with variable values
+  function showVars() {
+    varsEl.innerHTML = `
+      <div><b>weekOfPregnancy:</b> ${weekOfPregnancy}</div>
+      <div><b>babySizeSentence:</b> ${babySizeSentence}</div>
+      <div><b>heartRate:</b> ${heartRate}</div>
+      <div><b>babyLength:</b> ${babyLength}</div>
+      <div><b>weight:</b> ${weight}</div>
+      <div><b>recommendedMovies:</b> ${recommendedMovies.join(", ")}</div>
+      <div><b>nutritionTips:</b> ${nutritionTips.join(" · ")}</div>
+      <div><b>physicalActivities:</b> ${physicalActivities.join(" · ")}</div>
+    `;
+  }
+
+  analyzeBtn.addEventListener('click', async () => {
+    const file = pdfFileEl.files[0];
+    const apiKey = apiKeyInput.value.trim();
+    if (!file) return alert("Please select a PDF file.");
+    if (!apiKey) return alert("Please paste your OpenAI API key (local testing only).");
+
+    // reset UI
+    rawOutputEl.value = "";
+    varsEl.textContent = "Working...";
+    statusEl.textContent = "Starting extraction...";
+    weekOfPregnancy = babySizeSentence = heartRate = babyLength = weight = "";
+    recommendedMovies = nutritionTips = physicalActivities = [];
+
+    try {
+      const docText = await extractTextFromPDF(file);
+      statusEl.textContent = "Extraction complete. Calling OpenAI (may hit CORS on some browsers)...";
+
+      const prompt = buildPrompt(docText);
+      const modelRaw = await callOpenAIDirect(apiKey, prompt);
+
+      rawOutputEl.value = modelRaw;
+      statusEl.textContent = "Model returned output — parsing JSON...";
+
+      const parsed = robustParseJSON(modelRaw);
+      if (!parsed) {
+        statusEl.textContent = "❌ Model did not return valid JSON. See raw output.";
+        varsEl.textContent = "Parsing failed — check raw output above.";
+        return;
+      }
+
+      // assign variables with fallbacks
+      weekOfPregnancy = parsed.weekOfPregnancy ?? "Not specified";
+      babySizeSentence = parsed.babySizeSentence ?? "Not specified";
+      heartRate = parsed.heartRate ?? "Not specified";
+      babyLength = parsed.babyLength ?? "Not specified";
+      weight = parsed.weight ?? "Not specified";
+      recommendedMovies = Array.isArray(parsed.recommendedMovies) ? parsed.recommendedMovies : [];
+      nutritionTips = Array.isArray(parsed.nutritionTips) ? parsed.nutritionTips : [];
+      physicalActivities = Array.isArray(parsed.physicalActivities) ? parsed.physicalActivities : [];
+
+      showVars();
+      statusEl.textContent = "✅ Done — results shown above (and in variables).";
+
+      // variables are now available in JS code: weekOfPregnancy, babySizeSentence, heartRate, babyLength, weight, recommendedMovies, nutritionTips, physicalActivities
+      console.log("Parsed:", { weekOfPregnancy, babySizeSentence, heartRate, babyLength, weight, recommendedMovies, nutritionTips, physicalActivities });
+
+    } catch (err) {
+      console.error(err);
+      // common cause: CORS or certificate error when calling OpenAI from browser
+      statusEl.textContent = "❌ Error: " + err.message;
+      rawOutputEl.value = "Error details (see console):\n\n" + (err.stack || err.message || err);
+      alert("Request failed: " + err.message + "\n\nIf you see CORS or certificate errors, use a local server proxy instead (recommended).");
+    }
+  });
+  </script>
+</body>
+</html>

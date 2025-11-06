@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediConnect - Instant Emergency Video Call</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e74c3c;
+            --secondary: #3498db;
+            --accent: #2ecc71;
+            --light: #f9f9f9;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo i {
+            font-size: 28px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 120px 0 60px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        /* Emergency Call Section */
+        .emergency-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: var(--dark);
+            text-align: center;
+        }
+
+        .emergency-call-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .call-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .call-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .call-features li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .call-features i {
+            color: var(--accent);
+            font-size: 18px;
+        }
+
+        .pricing {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .price {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .price-note {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .emergency-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .emergency-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .emergency-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .call-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #e4edf5 0%, #f5f7fa 100%);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .doctor-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .doctor-avatar::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .doctor-avatar i {
+            font-size: 60px;
+            color: white;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: white;
+            border-radius: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            animation: blink 1.5s infinite;
+        }
+
+        /* Use Cases */
+        .use-cases {
+            margin-bottom: 50px;
+        }
+
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .case-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .case-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .case-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 28px;
+            color: white;
+        }
+
+        .accident {
+            background-color: var(--primary);
+        }
+
+        .home-treat {
+            background-color: var(--secondary);
+        }
+
+        .burns {
+            background-color: #e67e22;
+        }
+
+        .fracture {
+            background-color: #9b59b6;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            margin-bottom: 50px;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-top: 40px;
+        }
+
+        .steps::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e0e0e0;
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-text {
+            text-align: center;
+            max-width: 200px;
+        }
+
+        /* Video Call Modal */
+        .video-call-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .video-call-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .video-call-container {
+            background-color: white;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 15px;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .video-call-modal.active .video-call-container {
+            transform: scale(1);
+        }
+
+        .video-header {
+            background-color: var(--dark);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .call-timer {
+            font-weight: 600;
+        }
+
+        .call-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .call-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .call-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .end-call {
+            background-color: var(--primary);
+        }
+
+        .video-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: 400px;
+        }
+
+        .video-feed {
+            background-color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .video-placeholder {
+            text-align: center;
+            color: white;
+        }
+
+        .video-placeholder i {
+            font-size: 60px;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .user-video {
+            background-color: #2c2c2c;
+        }
+
+        .doctor-info {
+            padding: 20px;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .doctor-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .doctor-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .doctor-img i {
+            font-size: 36px;
+            color: white;
+        }
+
+        .doctor-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .doctor-specialty {
+            color: var(--gray);
+        }
+
+        .connecting-message {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .connecting-animation {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            margin: 0 5px;
+            animation: bounce 1.5s infinite ease-in-out;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        /* Footer */
+        footer {
+            width: 100%;
+            background: linear-gradient(135deg, #2c8563, #2a3a7c);
+            color: #fff;
+            padding: 50px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: #4CAF50;
+        }
+        
+        .footer-column p {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-column ul li a {
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-column ul li a:hover {
+            color: #4CAF50;
+            padding-left: 5px;
+        }
+        
+        .footer-column ul li a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: #4CAF50;
+            transform: translateY(-3px);
+        }
+        
+        /* Subscription Form */
+        .subscription-form {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .subscription-form h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+        }
+        
+        .form-group input:focus {
+            outline: 2px solid #4CAF50;
+        }
+        
+        .subscribe-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .subscribe-btn:hover {
+            background-color: #3d8b40;
+            transform: translateY(-2px);
+        }
+        
+        /* Footer Bottom */
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .footer-bottom p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: #4CAF50;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .emergency-call-container {
+                gap: 20px;
+            }
+            
+            .steps {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            
+            .steps::before {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-wrap: wrap;
+            }
+            
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 15px;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero {
+                padding: 100px 0 40px;
+            }
+            
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+            
+            .emergency-section {
+                padding: 25px;
+            }
+            
+            .emergency-call-container {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .call-features li {
+                font-size: 15px;
+            }
+            
+            .price {
+                font-size: 28px;
+            }
+            
+            .emergency-btn {
+                padding: 15px 20px;
+                font-size: 16px;
+            }
+            
+            .doctor-avatar {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .doctor-avatar i {
+                font-size: 50px;
+            }
+            
+            .steps {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+            }
+            
+            .step {
+                flex: none;
+            }
+            
+            .step-circle {
+                width: 70px;
+                height: 70px;
+                font-size: 28px;
+            }
+            
+            .video-content {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .video-feed {
+                height: 250px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .logo i {
+                font-size: 24px;
+            }
+            
+            .hero h1 {
+                font-size: 28px;
+            }
+            
+            .emergency-section {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 22px;
+            }
+            
+            .call-features li {
+                font-size: 14px;
+            }
+            
+            .price {
+                font-size: 24px;
+            }
+            
+            .emergency-btn {
+                padding: 14px 18px;
+                font-size: 15px;
+            }
+            
+            .doctor-avatar {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .doctor-avatar i {
+                font-size: 40px;
+            }
+            
+            .step-circle {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+            
+            .step-text h3 {
+                font-size: 16px;
+            }
+            
+            .step-text p {
+                font-size: 14px;
+            }
+            
+            .video-header {
+                padding: 12px 15px;
+            }
+            
+            .call-btn {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .video-feed {
+                height: 200px;
+            }
+            
+            .doctor-details {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .doctor-img {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .doctor-img i {
+                font-size: 30px;
+            }
+            
+            .doctor-name {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-heartbeat"></i>
+                   Swasth Sarthi
+                </div>
+                <button class="mobile-menu-btn" id="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="nav-links" id="nav-links">
+                    <a href="#home">Home</a>
+                    <a href="#use">When to Use </a>
+                    <a href="#work">How It Works</a>
+                    <a href="#foot">Contact</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Instant Emergency Video Call</h1>
+            <p>Connect with a qualified doctor within 60 seconds for immediate pre-treatment guidance after accidents or medical emergencies at home.</p>
+        </div>
+    </section>
+
+    <!-- Emergency Call Section -->
+    <section class="container">
+        <div class="emergency-section">
+            <h2 class="section-title">Get Immediate Medical Assistance</h2>
+            <div class="emergency-call-container">
+                <div class="call-info">
+                    <ul class="call-features">
+                        <li><i class="fas fa-check-circle"></i> Connect with a doctor in under 60 seconds</li>
+                        <li><i class="fas fa-check-circle"></i> Live video consultation for accurate assessment</li>
+                        <li><i class="fas fa-check-circle"></i> Pre-treatment guidance before reaching hospital</li>
+                        <li><i class="fas fa-check-circle"></i> Available 24/7 for emergencies</li>
+                        <li><i class="fas fa-check-circle"></i> Qualified and experienced medical professionals</li>
+                    </ul>
+                    
+                    <div class="pricing">
+                        <div class="price">₹199</div>
+                        <div class="price-note">One-time fee for immediate consultation</div>
+                    </div>
+                    
+                    <button class="emergency-btn" id="start-call-btn">
+                        <i class="fas fa-video"></i>
+                        Start Emergency Call
+                    </button>
+                </div>
+                
+                <div class="call-visual">
+                    <div class="doctor-avatar">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h3>Doctor Available</h3>
+                    <p>Qualified medical professional ready to assist</p>
+                    <div class="connection-status">
+                        <div class="status-dot"></div>
+                        <span>Online - Ready to connect</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section class="container use-cases" >
+        <h2 class="section-title" id="use">When to Use Instant Video Call</h2>
+        <div class="cases-grid">
+            <div class="case-card">
+                <div class="case-icon accident">
+                    <i class="fas fa-car-crash"></i>
+                </div>
+                <h3>Accidents</h3>
+                <p>Get immediate guidance after minor accidents before professional help arrives</p>
+            </div>
+            <div class="case-card">
+                <div class="case-icon home-treat">
+                    <i class="fas fa-home"></i>
+                </div>
+                <h3>Home Injuries</h3>
+                <p>Cuts, burns, falls, or other injuries that happen at home</p>
+            </div>
+            <div class="case-card">
+                <div class="case-icon burns">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <h3>Burns & Scalds</h3>
+                <p>Immediate first aid guidance for thermal injuries</p>
+            </div>
+            <div class="case-card">
+                <div class="case-icon fracture">
+                    <i class="fas fa-bone"></i>
+                </div>
+                <h3>Suspected Fractures</h3>
+                <p>Stabilization advice while waiting for ambulance</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="container how-it-works" id="work">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-circle">1</div>
+                <div class="step-text">
+                    <h3>Click Emergency Call</h3>
+                    <p>Start the process with one click</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-circle">2</div>
+                <div class="step-text">
+                    <h3>Connect in 60s</h3>
+                    <p>Get connected to a doctor within a minute</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-circle">3</div>
+                <div class="step-text">
+                    <h3>Show Injury</h3>
+                    <p>Use video to show your condition</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-circle">4</div>
+                <div class="step-text">
+                    <h3>Get Guidance</h3>
+                    <p>Receive immediate pre-treatment advice</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Call Modal -->
+    <div class="video-call-modal" id="video-call-modal">
+        <div class="video-call-container">
+            <div class="video-header">
+                <div class="call-timer" id="call-timer">00:00</div>
+                <div class="call-actions">
+                    <button class="call-btn" id="mute-btn">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button class="call-btn" id="video-btn">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <button class="call-btn end-call" id="end-call-btn">
+                        <i class="fas fa-phone"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="video-content">
+                <div class="video-feed user-video">
+                    <div class="video-placeholder">
+                        <i class="fas fa-user"></i>
+                        <p>Your Camera</p>
+                    </div>
+                </div>
+                <div class="video-feed doctor-video">
+                    <div class="connecting-message" id="connecting-message">
+                        <div class="connecting-animation">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <h3>Connecting you to a doctor...</h3>
+                        <p>This should take less than 60 seconds</p>
+                    </div>
+                    <div class="doctor-info" id="doctor-info" style="display: none;">
+                        <div class="doctor-details">
+                            <div class="doctor-img">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div>
+                                <div class="doctor-name">Dr. Sarah Johnson</div>
+                                <div class="doctor-specialty">Emergency Medicine Specialist</div>
+                            </div>
+                        </div>
+                        <p>Hello! I'm Dr. Johnson. Please show me the affected area so I can provide appropriate guidance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+   <footer id="foot">
+        <div class="container">
+            <div class="footer-content">
+                <!-- Company Info Column -->
+                <div class="footer-column">
+                    <h3>SWASTH SARTHI</h3>
+                    <p>Your trusted partner in health and wellness. Empowering your health decisions with AI-powered solutions and natural wellness approaches.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links Column -->
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Services</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Services Column -->
+                <div class="footer-column">
+                    <h3>Our Services</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-baby"></i> BabyCare</a></li>
+                        <li><a href="#"><i class="fas fa-video"></i> InstantCall</a></li>
+                        <li><a href="#"><i class="fas fa-chart-line"></i> Live Report Analysis</a></li>
+                        <li><a href="#"><i class="fas fa-tasks"></i> To-Do Tasks</a></li>
+                        <li><a href="#"><i class="fas fa-user-md"></i> Live Consultation</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Newsletter Column -->
+                <div class="footer-column">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe to our newsletter for the latest health tips, wellness advice, and service updates.</p>
+                    
+                    <div class="subscription-form">
+                        <h4>Subscribe Now</h4>
+                        <form id="newsletter-form">
+                            <div class="form-group">
+                                <input type="text" placeholder="Your Name" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" placeholder="Your Email" required>
+                            </div>
+                            <button type="submit" class="subscribe-btn">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 SWASTH SARTHI. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const navLinks = document.getElementById('nav-links');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                const icon = mobileMenuBtn.querySelector('i');
+                if (navLinks.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+            
+            // Video Call Modal Elements
+            const startCallBtn = document.getElementById('start-call-btn');
+            const videoCallModal = document.getElementById('video-call-modal');
+            const endCallBtn = document.getElementById('end-call-btn');
+            const callTimer = document.getElementById('call-timer');
+            const connectingMessage = document.getElementById('connecting-message');
+            const doctorInfo = document.getElementById('doctor-info');
+            
+            let callTime = 0;
+            let timerInterval;
+            
+            // Start Emergency Call
+            startCallBtn.addEventListener('click', function() {
+                videoCallModal.classList.add('active');
+                callTime = 0;
+                updateTimer();
+                
+                // Simulate connection process
+                setTimeout(function() {
+                    connectingMessage.style.display = 'none';
+                    doctorInfo.style.display = 'block';
+                    
+                    // Start timer
+                    timerInterval = setInterval(function() {
+                        callTime++;
+                        updateTimer();
+                    }, 1000);
+                }, 3000);
+            });
+            
+            // End Call
+            endCallBtn.addEventListener('click', function() {
+                videoCallModal.classList.remove('active');
+                clearInterval(timerInterval);
+                connectingMessage.style.display = 'block';
+                doctorInfo.style.display = 'none';
+            });
+            
+            // Update timer display
+            function updateTimer() {
+                const minutes = Math.floor(callTime / 60);
+                const seconds = callTime % 60;
+                callTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            // Toggle mute
+            const muteBtn = document.getElementById('mute-btn');
+            let isMuted = false;
+            
+            muteBtn.addEventListener('click', function() {
+                isMuted = !isMuted;
+                muteBtn.innerHTML = isMuted ? '<i class="fas fa-microphone-slash"></i>' : '<i class="fas fa-microphone"></i>';
+            });
+            
+            // Toggle video
+            const videoBtn = document.getElementById('video-btn');
+            let videoOn = true;
+            
+            videoBtn.addEventListener('click', function() {
+                videoOn = !videoOn;
+                videoBtn.innerHTML = videoOn ? '<i class="fas fa-video"></i>' : '<i class="fas fa-video-slash"></i>';
+            });
+        });
+    </script>
+</body>
+</html>

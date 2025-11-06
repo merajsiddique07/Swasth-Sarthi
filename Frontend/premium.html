@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Plans - Swasth Sarthi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2c7fb8;
+            --primary-dark: #1d5f8a;
+            --secondary: #2ecc71;
+            --accent: #9b59b6;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --gray: #7f8c8d;
+            --light-gray: #ecf0f1;
+            --white: #ffffff;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+       
+        .btn {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 16px;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(37, 107, 59, 0.9) 0%, rgba(51, 144, 198, 0.9) 100%);
+            color: var(--white);
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .hero h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        /* Plans Section */
+        .plans-section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 32px;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .plans-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .plan-card {
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 40px 30px;
+            flex: 1;
+            min-width: 280px;
+            max-width: 350px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .plan-card.popular::before {
+            content: "MOST POPULAR";
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: var(--secondary);
+            color: var(--white);
+            padding: 5px 30px;
+            font-size: 12px;
+            font-weight: 600;
+            transform: rotate(45deg);
+        }
+        
+        .plan-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .plan-price {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        
+        .price-period {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+        
+        .plan-features {
+            list-style: none;
+            margin-bottom: 40px;
+            text-align: left;
+            flex-grow: 1;
+        }
+        
+        .plan-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--light-gray);
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .plan-features li i {
+            color: var(--secondary);
+        }
+        
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+        
+        .plan-button {
+            display: inline-block;
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 14px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            text-align: center;
+            margin-top: auto;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .plan-button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        /* Specific plan styling */
+        .basic .plan-button {
+            background-color: var(--primary);
+        }
+        
+        .standard .plan-button {
+            background-color: var(--secondary);
+        }
+        
+        .standard .plan-button:hover {
+            background-color: #27ae60;
+        }
+        
+        .premium .plan-button {
+            background-color: var(--accent);
+        }
+        
+        .premium .plan-button:hover {
+            background-color: #8e44ad;
+        }
+        
+        /* Features Section */
+        .features-section {
+            background-color: var(--white);
+            padding: 80px 0;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            background: var(--light);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--primary);
+            font-size: 28px;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .feature-card p {
+            color: var(--gray);
+        }
+        
+        /* Footer */
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .plans-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .plan-card {
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            .hero h2 {
+                font-size: 28px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--white);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h3 {
+            color: var(--dark);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .payment-method {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-method.selected {
+            border-color: var(--primary);
+            background-color: rgba(44, 127, 184, 0.05);
+        }
+        
+        .payment-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--gray);
+        }
+        
+        .payment-method.selected .payment-icon {
+            color: var(--primary);
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .summary-total {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Choose Your Health Plan</h2>
+            <p>Select the plan that best fits your healthcare needs. All plans include secure access to your health records and 24/7 support.</p>
+        </div>
+    </section>
+
+    <!-- Plans Section -->
+    <section class="plans-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Health Plans</h2>
+                <p>Find the perfect plan for you and your family's healthcare needs</p>
+            </div>
+            
+            <div class="plans-container">
+                <!-- Basic Plan -->
+                <div class="plan-card basic">
+                    <h3 class="plan-name">BASIC</h3>
+                    <div class="plan-price">$29</div>
+                    <div class="price-period">per month</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Secure access to health records</li>
+                        <li><i class="fas fa-check"></i> Connect with 5 doctors online</li>
+                        <li><i class="fas fa-check"></i> Basic prescription management</li>
+                        <li><i class="fas fa-check"></i> Email support</li>
+                        <li><i class="fas fa-times"></i> Appointment scheduling</li>
+                        <li><i class="fas fa-times"></i> 24/7 health support</li>
+                    </ul>
+                    <button class="plan-button" onclick="selectPlan('Basic', 29)">SELECT PLAN</button>
+                </div>
+                
+                <!-- Standard Plan -->
+                <div class="plan-card standard popular">
+                    <h3 class="plan-name">STANDARD</h3>
+                    <div class="plan-price">$59</div>
+                    <div class="price-period">per month</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Secure access to health records</li>
+                        <li><i class="fas fa-check"></i> Connect with 15 doctors online</li>
+                        <li><i class="fas fa-check"></i> Advanced prescription management</li>
+                        <li><i class="fas fa-check"></i> Appointment scheduling</li>
+                        <li><i class="fas fa-check"></i> Priority email & chat support</li>
+                        <li><i class="fas fa-times"></i> 24/7 health support</li>
+                    </ul>
+                    <button class="plan-button" onclick="selectPlan('Standard', 59)">SELECT PLAN</button>
+                </div>
+                
+                <!-- Premium Plan -->
+                <div class="plan-card premium">
+                    <h3 class="plan-name">PREMIUM</h3>
+                    <div class="plan-price">$99</div>
+                    <div class="price-period">per month</div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Secure access to health records</li>
+                        <li><i class="fas fa-check"></i> Connect with unlimited doctors</li>
+                        <li><i class="fas fa-check"></i> Comprehensive prescription management</li>
+                        <li><i class="fas fa-check"></i> Advanced appointment scheduling</li>
+                        <li><i class="fas fa-check"></i> 24/7 health support</li>
+                        <li><i class="fas fa-check"></i> Dedicated health advisor</li>
+                    </ul>
+                    <button class="plan-button" onclick="selectPlan('Premium', 99)">SELECT PLAN</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose Swasth Sarthi?</h2>
+                <p>Our platform is designed to make healthcare accessible and convenient for everyone</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure Health Records</h3>
+                    <p>Your medical data is encrypted and stored securely with the highest level of protection.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h3>Expert Doctors</h3>
+                    <p>Connect with certified healthcare professionals from various specialties.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                    </div>
+                    <h3>Prescription Management</h3>
+                    <p>Manage and refill your prescriptions easily through our platform.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>24/7 Support</h3>
+                    <p>Our health support team is available round the clock to assist you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Complete Your Purchase</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="planName">Selected Plan</label>
+                <input type="text" id="planName" class="form-control" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="planPrice">Monthly Price</label>
+                <input type="text" id="planPrice" class="form-control" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label>Payment Method</label>
+                <div class="payment-methods">
+                    <div class="payment-method" onclick="selectPayment('card')">
+                        <div class="payment-icon">
+                            <i class="far fa-credit-card"></i>
+                        </div>
+                        <div>Credit Card</div>
+                    </div>
+                    <div class="payment-method" onclick="selectPayment('paypal')">
+                        <div class="payment-icon">
+                            <i class="fab fa-paypal"></i>
+                        </div>
+                        <div>PayPal</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="cardDetails" style="display: none;">
+                <div class="form-group">
+                    <label for="cardNumber">Card Number</label>
+                    <input type="text" id="cardNumber" class="form-control" placeholder="1234 5678 9012 3456">
+                </div>
+                
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="expiryDate">Expiry Date</label>
+                        <input type="text" id="expiryDate" class="form-control" placeholder="MM/YY">
+                    </div>
+                    
+                    <div class="form-group" style="flex: 1;">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" class="form-control" placeholder="123">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cardName">Name on Card</label>
+                    <input type="text" id="cardName" class="form-control" placeholder="John Doe">
+                </div>
+            </div>
+            
+            <div class="summary-item">
+                <span>Plan Cost:</span>
+                <span id="summaryCost">$0</span>
+            </div>
+            <div class="summary-item">
+                <span>Tax:</span>
+                <span id="summaryTax">$0</span>
+            </div>
+            <div class="summary-item summary-total">
+                <span>Total:</span>
+                <span id="summaryTotal">$0</span>
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="processPayment()">Complete Purchase</button>
+        </div>
+    </div>
+
+    
+    <script>
+        let selectedPlan = '';
+        let selectedPlanPrice = 0;
+        let selectedPayment = '';
+        
+        function selectPlan(plan, price) {
+            selectedPlan = plan;
+            selectedPlanPrice = price;
+            
+            document.getElementById('planName').value = plan + ' Plan';
+            document.getElementById('planPrice').value = '$' + price + '/month';
+            
+            // Calculate summary
+            const tax = (price * 0.1).toFixed(2);
+            const total = (parseFloat(price) + parseFloat(tax)).toFixed(2);
+            
+            document.getElementById('summaryCost').textContent = '$' + price;
+            document.getElementById('summaryTax').textContent = '$' + tax;
+            document.getElementById('summaryTotal').textContent = '$' + total;
+            
+            // Show modal
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            selectedPayment = '';
+            resetPaymentMethods();
+        }
+        
+        function selectPayment(method) {
+            selectedPayment = method;
+            
+            // Reset all payment methods
+            resetPaymentMethods();
+            
+            // Highlight selected method
+            const paymentMethods = document.querySelectorAll('.payment-method');
+            paymentMethods.forEach(pm => {
+                if (pm.querySelector('.payment-icon i').classList.contains(method === 'card' ? 'fa-credit-card' : 'fa-paypal')) {
+                    pm.classList.add('selected');
+                }
+            });
+            
+            // Show card details if credit card selected
+            if (method === 'card') {
+                document.getElementById('cardDetails').style.display = 'block';
+            } else {
+                document.getElementById('cardDetails').style.display = 'none';
+            }
+        }
+        
+        function resetPaymentMethods() {
+            const paymentMethods = document.querySelectorAll('.payment-method');
+            paymentMethods.forEach(pm => {
+                pm.classList.remove('selected');
+            });
+        }
+        
+        function processPayment() {
+            if (!selectedPayment) {
+                alert('Please select a payment method');
+                return;
+            }
+            
+            if (selectedPayment === 'card') {
+                const cardNumber = document.getElementById('cardNumber').value;
+                const expiryDate = document.getElementById('expiryDate').value;
+                const cvv = document.getElementById('cvv').value;
+                const cardName = document.getElementById('cardName').value;
+                
+                if (!cardNumber || !expiryDate || !cvv || !cardName) {
+                    alert('Please fill in all card details');
+                    return;
+                }
+            }
+            
+            // In a real application, you would process the payment here
+            alert(`Thank you for purchasing the ${selectedPlan} Plan! Your payment of $${selectedPlanPrice}/month has been processed.`);
+            closeModal();
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('paymentModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

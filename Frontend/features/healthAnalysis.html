@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthTrack - Live Report Analysis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4A6FA5;
+            --secondary: #6B8E23;
+            --accent: #FF6B6B;
+            --light: #F8F9FA;
+            --dark: #2C3E50;
+            --success: #2ECC71;
+            --warning: #F39C12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo i {
+            font-size: 28px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .symptom-trend {
+            color: var(--success);
+        }
+
+        .chat-activity {
+            color: var(--primary);
+        }
+
+        .wellness-score {
+            color: var(--secondary);
+        }
+
+        .active-issues {
+            color: var(--accent);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        /* Charts */
+        .chart-container {
+            height: 250px;
+            position: relative;
+            margin-top: 15px;
+        }
+
+        .chart-placeholder {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            color: #999;
+        }
+
+        /* Insights */
+        .insights-list {
+            list-style: none;
+        }
+
+        .insight-item {
+            padding: 15px;
+            border-left: 4px solid var(--primary);
+            background-color: #f8f9fa;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .insight-item.positive {
+            border-left-color: var(--success);
+        }
+
+        .insight-item.warning {
+            border-left-color: var(--warning);
+        }
+
+        .insight-item.negative {
+            border-left-color: var(--accent);
+        }
+
+        .insight-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .insight-title {
+            font-weight: 600;
+        }
+
+        .insight-date {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Recommendations */
+        .recommendation-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .rec-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .rec-content {
+            flex: 1;
+        }
+
+        .rec-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .rec-desc {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Chat Preview */
+        .chat-preview {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background-color: #E3F2FD;
+            margin-left: auto;
+        }
+
+        .bot-message {
+            background-color: #F5F5F5;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Footer */
+        footer {
+            width: 100%;
+            background: linear-gradient(135deg, #2c8563, #2a3a7c);
+            color: #fff;
+            padding: 50px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: #4CAF50;
+        }
+        
+        .footer-column p {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-column ul li a {
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-column ul li a:hover {
+            color: #4CAF50;
+            padding-left: 5px;
+        }
+        
+        .footer-column ul li a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: #4CAF50;
+            transform: translateY(-3px);
+        }
+        
+        /* Subscription Form */
+        .subscription-form {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .subscription-form h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+        }
+        
+        .form-group input:focus {
+            outline: 2px solid #4CAF50;
+        }
+        
+        .subscribe-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .subscribe-btn:hover {
+            background-color: #3d8b40;
+            transform: translateY(-2px);
+        }
+        
+        /* Footer Bottom */
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .footer-bottom p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: #4CAF50;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                gap: 20px;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .user-info {
+                justify-content: center;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .chart-container {
+                height: 200px;
+            }
+            
+            .insight-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .chat-message {
+                max-width: 90%;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .logo i {
+                font-size: 24px;
+            }
+            
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card {
+                padding: 15px;
+            }
+            
+            .stat-value {
+                font-size: 28px;
+            }
+            
+            .tabs {
+                gap: 5px;
+            }
+            
+            .tab {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            
+            .card {
+                padding: 15px;
+                border-radius: 12px;
+            }
+            
+            .card-title {
+                font-size: 16px;
+                margin-bottom: 15px;
+            }
+            
+            .chart-container {
+                height: 180px;
+            }
+            
+            .recommendation-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .rec-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+            
+            .chat-message {
+                max-width: 95%;
+            }
+            
+            .footer-column h3 {
+                font-size: 1.3rem;
+            }
+            
+            .subscription-form {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .logo {
+                font-size: 18px;
+            }
+            
+            .stat-value {
+                font-size: 24px;
+            }
+            
+            .card-title {
+                font-size: 15px;
+            }
+            
+            .tab {
+                padding: 6px 10px;
+                font-size: 13px;
+            }
+            
+            .insight-item {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                HealthTrack Analytics
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">JS</div>
+                <div>
+                    <div style="font-weight: 600;">Jane Smith</div>
+                    <div style="font-size: 14px; color: #666;">Last updated: Today, 10:30 AM</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value symptom-trend">-24%</div>
+                <div class="stat-label">Symptom Trend</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value chat-activity">42</div>
+                <div class="stat-label">Chat Interactions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value wellness-score">78/100</div>
+                <div class="stat-label">Wellness Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value active-issues">3</div>
+                <div class="stat-label">Active Issues</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" data-tab="overview">Overview</div>
+            <div class="tab" data-tab="symptoms">Symptom Analysis</div>
+            <div class="tab" data-tab="progress">Progress Tracking</div>
+            <div class="tab" data-tab="recommendations">Recommendations</div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Symptom Trends -->
+            <div class="card tab-content active" id="overview">
+                <h3 class="card-title">
+                    <i class="fas fa-chart-line"></i>
+                    Symptom Trends
+                </h3>
+                <div class="chart-container">
+                    <canvas id="symptomChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Wellness Score -->
+            <div class="card tab-content active" id="overview">
+                <h3 class="card-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Wellness Score Breakdown
+                </h3>
+                <div class="chart-container">
+                    <canvas id="wellnessChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Key Insights -->
+            <div class="card tab-content active" id="overview">
+                <h3 class="card-title">
+                    <i class="fas fa-lightbulb"></i>
+                    Key Insights
+                </h3>
+                <ul class="insights-list">
+                    <li class="insight-item positive">
+                        <div class="insight-header">
+                            <div class="insight-title">Improved Sleep Patterns</div>
+                            <div class="insight-date">2 days ago</div>
+                        </div>
+                        <div class="insight-desc">Your sleep duration has increased by 45 minutes on average based on chat mentions.</div>
+                    </li>
+                    <li class="insight-item warning">
+                        <div class="insight-header">
+                            <div class="insight-title">Stress Level Increase</div>
+                            <div class="insight-date">1 day ago</div>
+                        </div>
+                        <div class="insight-desc">Higher frequency of stress-related keywords detected in recent conversations.</div>
+                    </li>
+                    <li class="insight-item positive">
+                        <div class="insight-header">
+                            <div class="insight-title">Medication Adherence</div>
+                            <div class="insight-date">Today</div>
+                        </div>
+                        <div class="insight-desc">Consistent mentions of taking prescribed medication as directed.</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Symptom Analysis -->
+            <div class="card tab-content" id="symptoms">
+                <h3 class="card-title">
+                    <i class="fas fa-stethoscope"></i>
+                    Symptom Frequency
+                </h3>
+                <div class="chart-container">
+                    <canvas id="symptomFrequencyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Symptom Correlation -->
+            <div class="card tab-content" id="symptoms">
+                <h3 class="card-title">
+                    <i class="fas fa-project-diagram"></i>
+                    Symptom Correlation
+                </h3>
+                <div class="chart-container">
+                    <canvas id="correlationChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Progress Tracking -->
+            <div class="card tab-content" id="progress">
+                <h3 class="card-title">
+                    <i class="fas fa-tasks"></i>
+                    Health Metrics Over Time
+                </h3>
+                <div class="chart-container">
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chat Analysis -->
+            <div class="card tab-content" id="progress">
+                <h3 class="card-title">
+                    <i class="fas fa-comments"></i>
+                    Chat Sentiment Analysis
+                </h3>
+                <div class="chart-container">
+                    <canvas id="sentimentChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="card tab-content" id="recommendations">
+                <h3 class="card-title">
+                    <i class="fas fa-clipboard-list"></i>
+                    Personalized Recommendations
+                </h3>
+                <div class="recommendation-card">
+                    <div class="rec-icon">
+                        <i class="fas fa-walking"></i>
+                    </div>
+                    <div class="rec-content">
+                        <div class="rec-title">Increase Physical Activity</div>
+                        <div class="rec-desc">Based on your chat history, try adding 15 minutes of walking to your daily routine.</div>
+                    </div>
+                </div>
+                <div class="recommendation-card">
+                    <div class="rec-icon">
+                        <i class="fas fa-apple-alt"></i>
+                    </div>
+                    <div class="rec-content">
+                        <div class="rec-title">Dietary Adjustment</div>
+                        <div class="rec-desc">Consider reducing caffeine intake after 2 PM to improve sleep quality.</div>
+                    </div>
+                </div>
+                <div class="recommendation-card">
+                    <div class="rec-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <div class="rec-content">
+                        <div class="rec-title">Sleep Hygiene</div>
+                        <div class="rec-desc">Establish a consistent bedtime routine to address sleep disruptions.</div>
+                    </div>
+                </div>
+                <div class="recommendation-card">
+                    <div class="rec-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="rec-content">
+                        <div class="rec-title">Stress Management</div>
+                        <div class="rec-desc">Practice 5-minute mindfulness exercises when stress levels increase.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Chat Preview -->
+            <div class="card">
+                <h3 class="card-title">
+                    <i class="fas fa-comment-medical"></i>
+                    Recent Chat Preview
+                </h3>
+                <div class="chat-preview">
+                    <div class="chat-message user-message">
+                        <div>I've been experiencing headaches in the afternoon lately</div>
+                        <div class="message-time">Today, 09:15 AM</div>
+                    </div>
+                    <div class="chat-message bot-message">
+                        <div>Have you noticed any patterns with your headaches? Any specific triggers?</div>
+                        <div class="message-time">Today, 09:16 AM</div>
+                    </div>
+                    <div class="chat-message user-message">
+                        <div>They seem to start after lunch. I've been drinking more coffee this week</div>
+                        <div class="message-time">Today, 09:17 AM</div>
+                    </div>
+                    <div class="chat-message bot-message">
+                        <div>Caffeine could be a factor. Let's track this and consider reducing afternoon coffee.</div>
+                        <div class="message-time">Today, 09:18 AM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <!-- Company Info Column -->
+                <div class="footer-column">
+                    <h3>SWASTH SARTHI</h3>
+                    <p>Your trusted partner in health and wellness. Empowering your health decisions with AI-powered solutions and natural wellness approaches.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links Column -->
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Services</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Services Column -->
+                <div class="footer-column">
+                    <h3>Our Services</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-baby"></i> BabyCare</a></li>
+                        <li><a href="#"><i class="fas fa-video"></i> InstantCall</a></li>
+                        <li><a href="#"><i class="fas fa-chart-line"></i> Live Report Analysis</a></li>
+                        <li><a href="#"><i class="fas fa-tasks"></i> To-Do Tasks</a></li>
+                        <li><a href="#"><i class="fas fa-user-md"></i> Live Consultation</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Newsletter Column -->
+                <div class="footer-column">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe to our newsletter for the latest health tips, wellness advice, and service updates.</p>
+                    
+                    <div class="subscription-form">
+                        <h4>Subscribe Now</h4>
+                        <form id="newsletter-form">
+                            <div class="form-group">
+                                <input type="text" placeholder="Your Name" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" placeholder="Your Email" required>
+                            </div>
+                            <button type="submit" class="subscribe-btn">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 SWASTH SARTHI. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab functionality
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show active tab content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === tabId) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Initialize charts
+            initializeCharts();
+            
+            function initializeCharts() {
+                // Symptom Trends Chart
+                const symptomCtx = document.getElementById('symptomChart').getContext('2d');
+                const symptomChart = new Chart(symptomCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Headache Frequency',
+                            data: [12, 19, 8, 7, 6, 5],
+                            borderColor: '#FF6B6B',
+                            backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }, {
+                            label: 'Fatigue Level',
+                            data: [8, 12, 6, 5, 4, 3],
+                            borderColor: '#4A6FA5',
+                            backgroundColor: 'rgba(74, 111, 165, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Frequency (days per month)'
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Wellness Score Chart
+                const wellnessCtx = document.getElementById('wellnessChart').getContext('2d');
+                const wellnessChart = new Chart(wellnessCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Physical', 'Mental', 'Sleep', 'Nutrition', 'Activity'],
+                        datasets: [{
+                            data: [25, 20, 15, 20, 20],
+                            backgroundColor: [
+                                '#4A6FA5',
+                                '#6B8E23',
+                                '#FF6B6B',
+                                '#FFA726',
+                                '#26C6DA'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+                
+                // Symptom Frequency Chart
+                const symptomFrequencyCtx = document.getElementById('symptomFrequencyChart').getContext('2d');
+                const symptomFrequencyChart = new Chart(symptomFrequencyCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Headache', 'Fatigue', 'Stress', 'Sleep Issues', 'Digestion'],
+                        datasets: [{
+                            label: 'Mentions in Chats',
+                            data: [15, 12, 18, 10, 8],
+                            backgroundColor: [
+                                'rgba(255, 107, 107, 0.7)',
+                                'rgba(74, 111, 165, 0.7)',
+                                'rgba(255, 167, 38, 0.7)',
+                                'rgba(38, 198, 218, 0.7)',
+                                'rgba(107, 142, 35, 0.7)'
+                            ],
+                            borderColor: [
+                                '#FF6B6B',
+                                '#4A6FA5',
+                                '#FFA726',
+                                '#26C6DA',
+                                '#6B8E23'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Frequency'
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Progress Chart
+                const progressCtx = document.getElementById('progressChart').getContext('2d');
+                const progressChart = new Chart(progressCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                        datasets: [{
+                            label: 'Wellness Score',
+                            data: [65, 68, 72, 70, 75, 78],
+                            borderColor: '#6B8E23',
+                            backgroundColor: 'rgba(107, 142, 35, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            }
+                        },
+                        scales: {
+                            y: {
+                                min: 50,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: 'Wellness Score'
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Sentiment Chart
+                const sentimentCtx = document.getElementById('sentimentChart').getContext('2d');
+                const sentimentChart = new Chart(sentimentCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Positive', 'Neutral', 'Negative'],
+                        datasets: [{
+                            label: 'Chat Sentiment',
+                            data: [65, 25, 10],
+                            backgroundColor: [
+                                'rgba(46, 204, 113, 0.7)',
+                                'rgba(52, 152, 219, 0.7)',
+                                'rgba(231, 76, 60, 0.7)'
+                            ],
+                            borderColor: [
+                                '#2ECC71',
+                                '#3498DB',
+                                '#E74C3C'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: 'Percentage (%)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pregnancy Report Analyzer (Local)</title>
+  <style>
+    body{font-family:"Poppins",sans-serif;background:#f5f7fa;padding:30px;text-align:center;}
+    .container{max-width:850px;margin:auto;background:white;border-radius:12px;padding:25px;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+    h2{margin-bottom:8px;}
+    button{background:#0078ff;color:white;border:none;border-radius:6px;padding:10px 20px;cursor:pointer;font-weight:500;margin-top:10px;}
+    button:hover{background:#005fd1;}
+    .status{margin-top:10px;font-size:14px;color:#444;}
+    pre{background:#eef2f7;padding:15px;text-align:left;border-radius:8px;white-space:pre-wrap;word-break:break-word;}
+    .result-card{background:#e7f4ff;border-left:4px solid #0078ff;margin-top:15px;padding:10px;border-radius:6px;text-align:left;}
+    .result-card b{color:#0078ff;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🩺 Pregnancy Report Analyzer (Local OpenAI API)</h2>
+    <p>Upload a pregnancy report PDF and get AI-generated insights. (Local testing only — key is in code)</p>
+
+    <input type="file" id="pdfFile" accept="application/pdf" />
+    <br>
+    <button id="uploadBtn">Upload & Analyze</button>
+    <div class="status" id="status">Status: Waiting for file...</div>
+
+    <div id="results"></div>
+    <pre id="rawOutput" style="display:none;"></pre>
+  </div>
+
+  <!-- pdf.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+
+    const fileInput = document.getElementById("pdfFile");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const statusEl = document.getElementById("status");
+    const resultsEl = document.getElementById("results");
+    const rawOutput = document.getElementById("rawOutput");
+
+    // ⚠️ Paste your OpenAI API key here for LOCAL TESTING ONLY
+    const OPENAI_API_KEY = "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";
+
+    let pdfText = "";
+
+    async function extractTextFromPDF(file) {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let text = "";
+      for (let i = 1; i <= pdf.numPages; i++) {
+        statusEl.textContent = `Extracting page ${i}/${pdf.numPages}...`;
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += content.items.map(it => it.str).join(" ") + "\n\n";
+      }
+      return text.trim();
+    }
+
+    function buildPrompt(text) {
+      return `
+You are a pregnancy report analyzer. Analyze ONLY the text below and return a STRICT JSON object with:
+"weekOfPregnancy","babySizeSentence","heartRate","babyLength","weight","recommendedMovies","nutritionTips","physicalActivities".
+
+- weekOfPregnancy: short like "22 weeks"
+- babySizeSentence: two short lines about baby size & organ development
+- heartRate: "120–160 bpm"
+- babyLength: "27 cm"
+- weight: "450 g"
+- recommendedMovies: array of 3–5 Bollywood movie titles
+- nutritionTips: array of 3 short tips
+- physicalActivities: array of 3 safe exercises
+
+If data not found, use "Not specified" or [].
+TEXT START:
+${text}
+TEXT END.
+`;
+    }
+
+    async function callOpenAIDirect(promptText) {
+      const endpoint = "https://api.openai.com/v1/chat/completions";
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: "You are a helpful, concise medical document analyst. Return only valid JSON." },
+            { role: "user", content: promptText }
+          ],
+          temperature: 0.0,
+          max_tokens: 800
+        })
+      });
+      if (!res.ok) {
+        throw new Error(`OpenAI API error ${res.status}: ${await res.text()}`);
+      }
+      const data = await res.json();
+      return data.choices?.[0]?.message?.content || JSON.stringify(data);
+    }
+
+    function parseJSON(text) {
+      try { return JSON.parse(text); }
+      catch {
+        const m = text.match(/\{[\s\S]*\}/);
+        return m ? JSON.parse(m[0]) : null;
+      }
+    }
+
+    uploadBtn.addEventListener("click", async () => {
+      const file = fileInput.files[0];
+      if (!file) return alert("Please choose a PDF file first.");
+      resultsEl.innerHTML = "";
+      rawOutput.style.display = "none";
+      statusEl.textContent = "Reading PDF...";
+
+      try {
+        pdfText = await extractTextFromPDF(file);
+        statusEl.textContent = "Sending to OpenAI...";
+        const prompt = buildPrompt(pdfText);
+        const response = await callOpenAIDirect(prompt);
+        rawOutput.textContent = response;
+
+        const parsed = parseJSON(response);
+        if (!parsed) {
+          statusEl.textContent = "❌ Model didn't return valid JSON. Check raw output.";
+          rawOutput.style.display = "block";
+          return;
+        }
+
+        const r = parsed;
+        resultsEl.innerHTML = `
+          <div class="result-card"><b>Week of Pregnancy:</b> ${r.weekOfPregnancy || "Not specified"}</div>
+          <div class="result-card"><b>Baby Size:</b> ${r.babySizeSentence || "Not specified"}</div>
+          <div class="result-card"><b>Heart Rate:</b> ${r.heartRate || "Not specified"}</div>
+          <div class="result-card"><b>Baby Length:</b> ${r.babyLength || "Not specified"}</div>
+          <div class="result-card"><b>Weight:</b> ${r.weight || "Not specified"}</div>
+          <div class="result-card"><b>Recommended Bollywood Movies:</b> ${(r.recommendedMovies || []).join(", ")}</div>
+          <div class="result-card"><b>Nutrition Tips:</b> ${(r.nutritionTips || []).join("; ")}</div>
+          <div class="result-card"><b>Physical Activities:</b> ${(r.physicalActivities || []).join("; ")}</div>
+        `;
+        statusEl.textContent = "✅ Analysis complete!";
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "❌ " + err.message;
+        alert("Error: " + err.message + "\n\nIf you see a CORS or certificate error, use a backend proxy instead.");
+      }
+    });
+  </script>
+</body>
+</html>

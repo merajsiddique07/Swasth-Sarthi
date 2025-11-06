@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BabyCare - Your Pregnancy Companion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B9D;
+            --secondary: #8A4FFF;
+            --accent: #4ECDC4;
+            --light: #FFF9FB;
+            --dark: #333333;
+            --happy: #FFD166;
+            --calm: #A8E6CF;
+            --energetic: #FF9E6D;
+            --default-bg: #FFF9FB;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            transition: background-color 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position:fixed;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .logo i {
+            font-size: 28px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Pregnancy Progress Bar */
+        .progress-section {
+            background-color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 70px;
+            height: 12px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 10px;
+            width: 7.5%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        /* Mood Selector */
+        .mood-section {
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .mood-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .mood-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .mood-option {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .mood-option:hover {
+            transform: scale(1.1);
+        }
+
+        .mood-happy {
+            background-color: var(--happy);
+        }
+
+        .mood-calm {
+            background-color: var(--calm);
+        }
+
+        .mood-energetic {
+            background-color: var(--energetic);
+        }
+
+        .mood-option.active {
+            transform: scale(1.15);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px 0;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            font-size: 22px;
+        }
+
+        /* Upload Section */
+        .upload-area {
+            border: 2px dashed var(--accent);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background-color: rgba(78, 205, 196, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* AI Analysis */
+        .ai-analysis {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .analysis-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+
+        .analysis-result {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Quick Help */
+        .quick-help-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .quick-help-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .quick-help-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .quick-help-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .quick-help-modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            color: var(--secondary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        .symptom-checklist {
+            margin-bottom: 25px;
+        }
+
+        .symptom-item {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .symptom-item input {
+            margin-right: 10px;
+        }
+
+        .recommendations {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .recommendation-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .recommendation-list {
+            list-style-type: none;
+        }
+
+        .recommendation-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .recommendation-list li:before {
+            content: "•";
+            color: var(--accent);
+            font-size: 20px;
+            position: absolute;
+            left: 0;
+        }
+
+        /* Baby Development */
+        .baby-development {
+            grid-column: 1 / -1;
+        }
+
+        .development-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .development-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .development-card i {
+            font-size: 36px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        /* Footer */
+        footer {
+            width: 100%;
+            background: linear-gradient(135deg, #2c8563, #2a3a7c);
+            color: #fff;
+            padding: 50px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: #4CAF50;
+        }
+        
+        .footer-column p {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-column ul li a {
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-column ul li a:hover {
+            color: #4CAF50;
+            padding-left: 5px;
+        }
+        
+        .footer-column ul li a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: #4CAF50;
+            transform: translateY(-3px);
+        }
+        
+        /* Subscription Form */
+        .subscription-form {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .subscription-form h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+        }
+        
+        .form-group input:focus {
+            outline: 2px solid #4CAF50;
+        }
+        
+        .subscribe-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .subscribe-btn:hover {
+            background-color: #3d8b40;
+            transform: translateY(-2px);
+        }
+        
+        /* Footer Bottom */
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .footer-bottom p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .footer-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: #4CAF50;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-content {
+                gap: 20px;
+            }
+            
+            .development-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-wrap: wrap;
+            }
+            
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 15px;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .baby-development {
+                grid-column: 1;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .upload-area {
+                padding: 20px;
+            }
+            
+            .upload-icon {
+                font-size: 36px;
+            }
+            
+            .development-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-info {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .quick-help-btn {
+                width: 60px;
+                height: 60px;
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .logo i {
+                font-size: 24px;
+            }
+            
+            .card {
+                padding: 15px;
+                border-radius: 12px;
+            }
+            
+            .card-title {
+                font-size: 18px;
+            }
+            
+            .upload-area {
+                padding: 15px;
+            }
+            
+            .upload-icon {
+                font-size: 32px;
+            }
+            
+            .upload-text {
+                font-size: 14px;
+            }
+            
+            .upload-btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            .ai-analysis {
+                padding: 15px;
+            }
+            
+            .analysis-title {
+                font-size: 16px;
+            }
+            
+            .development-card {
+                padding: 15px;
+            }
+            
+            .development-card i {
+                font-size: 28px;
+            }
+            
+            .mood-option {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .quick-help-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+                bottom: 15px;
+                right: 15px;
+            }
+            
+            .modal-content {
+                padding: 15px;
+            }
+            
+            .modal-title {
+                font-size: 20px;
+            }
+            
+            .footer-column h3 {
+                font-size: 1.3rem;
+            }
+            
+            .subscription-form {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .logo {
+                font-size: 18px;
+            }
+            
+            .card-title {
+                font-size: 16px;
+            }
+            
+            .upload-text {
+                font-size: 13px;
+            }
+            
+            .mood-title {
+                font-size: 16px;
+            }
+            
+            .mood-option {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+            
+            .quick-help-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+        }
+        #uploadBtn{
+            background-color: #7728a5;
+            margin: 5px;
+            width: 10rem;
+            color: white;
+            height: 2rem;
+            border-radius: 10%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-baby"></i>
+                    BabyCare
+                </div>
+                <button class="mobile-menu-btn" id="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="nav-links" id="nav-links">
+                    <a href="#home"><i class="fas fa-home"></i> Home</a>
+                    <a href="#report"><i class="fa-solid fa-upload"></i> Upload Report</a>
+                    <a href="#result"><i class="fas fa-notes-medical"></i> Reports</a>
+                    <a href="#footer"><i class="fas fa-user-md"></i> Contact</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Pregnancy Progress Bar -->
+    <section class="progress-section" id="home">
+        <div class="container">
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="progress-info">
+                <span id="week">Week 3</span>
+                <span>Due weeks</span>
+                <span id="dueWeek">37</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mood Selector -->
+    <section class="mood-section">
+        <div class="container">
+            <h3 class="mood-title">How are you feeling today?</h3>
+            <div class="mood-options">
+                <div class="mood-option mood-happy active" data-mood="happy">
+                    <i class="fas fa-smile"></i>
+                </div>
+                <div class="mood-option mood-calm" data-mood="calm">
+                    <i class="fas fa-meh"></i>
+                </div>
+                <div class="mood-option mood-energetic" data-mood="energetic">
+                    <i class="fas fa-grin"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container" id="report">
+        <div class="main-content">
+            <!-- Upload Checkup Report -->
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-file-medical"></i>
+                    Upload Checkup Report
+                </h2>
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <p class="upload-text">Drag & drop your checkup report or</p>
+                    <!-- <input type="file" class="upload-btn" id="ufile" accept="application/pdf"/> -->
+                    <input type="file" class="upload-btn" id="pdfFile" accept="application/pdf" />
+                     <button id="uploadBtn">Upload & Analyze</button>
+                    <div class="status" id="status">Status: Waiting for file...</div>
+                    <p class="upload-text" style="font-size: 14px; margin-top: 10px;">Supported formats: PDF only</p>
+                </div>
+                
+                <div class="ai-analysis" id="result">
+                    <h3 class="analysis-title">AI Analysis</h3>
+                    <div class="analysis-result">
+                        <p>Upload your first checkup report to get personalized insights about your pregnancy journey.</p>
+                        <p>Our AI will analyze your reports and provide:</p>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>Baby development tracking</li>
+                            <li>Health recommendations</li>
+                            <li>Personalized tips</li>
+                            <li>Progress monitoring</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pregnancy Tracker -->
+            <div class="card">
+                <h2 class="card-title">
+                    <i class="fas fa-baby-carriage"></i>
+                    Pregnancy Tracker
+                </h2>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 48px; color: var(--primary); margin-bottom: 10px;">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <h3 style="color: var(--secondary); margin-bottom: 5px;" id="week2">Week 3</h3>
+                    <p style="color: var(--dark);">First Trimester</p>
+                </div>
+                
+                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px;">Your Baby This Week</h4>
+                    <p id="sizeOfbaby" >Your baby is now the size of a strawberry! All vital organs are formed and starting to function.</p>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                    <div style="text-align: center; flex: 1; min-width: 80px;">
+                        <div style="font-size: 24px; color: var(--accent); margin-bottom: 5px;" id="heartRate">140</div>
+                        <div style="font-size: 14px;" >Heart Rate (BPM)</div>
+                    </div>
+                    <div style="text-align: center; flex: 1; min-width: 80px;">
+                        <div style="font-size: 24px; color: var(--accent); margin-bottom: 5px;" id="babyLength">1.2</div>
+                        <div style="font-size: 14px;" >Baby Length (in)</div>
+                    </div>
+                    <div style="text-align: center; flex: 1; min-width: 80px;">
+                        <div style="font-size: 24px; color: var(--accent); margin-bottom: 5px;" id="Weight">0.14</div>
+                        <div style="font-size: 14px;" >Weight (oz)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baby Development -->
+            <div class="card baby-development">
+                <h2 class="card-title">
+                    <i class="fas fa-seedling"></i>
+                    Baby Development & Tips
+                </h2>
+                <div class="development-info">
+                    <div class="development-card">
+                        <i class="fas fa-utensils"></i>
+                        <h3>Nutrition Tips</h3>
+                        <p id="food">Focus on folate-rich foods, iron, and calcium. Stay hydrated and eat small, frequent meals.</p>
+                    </div>
+                    <div class="development-card">
+                        <i class="fas fa-film"></i>
+                        <h3>Recommended Movies</h3>
+                        <p id="movies">Watch uplifting movies like "Juno", "What to Expect When You're Expecting", or "Knocked Up".</p>
+                    </div>
+                    <div class="development-card">
+                        <i class="fas fa-heart"></i>
+                        <h3>Wellness Activities</h3>
+                        <p id="physical">Try prenatal yoga, meditation, or light walking. Connect with other expecting mothers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Help Button -->
+    <div class="quick-help-btn" id="quick-help-btn">
+        <i class="fas fa-hands-helping"></i>
+    </div>
+
+    <!-- Quick Help Modal -->
+    <div class="quick-help-modal" id="quick-help-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Quick Help</h2>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            
+            <div class="symptom-checklist">
+                <h3 style="margin-bottom: 15px; color: var(--secondary);">Select your symptoms:</h3>
+                <div class="symptom-item">
+                    <input type="checkbox" id="nausea">
+                    <label for="nausea">Nausea/Morning Sickness</label>
+                </div>
+                <div class="symptom-item">
+                    <input type="checkbox" id="fatigue">
+                    <label for="fatigue">Fatigue</label>
+                </div>
+                <div class="symptom-item">
+                    <input type="checkbox" id="backache">
+                    <label for="backache">Backache</label>
+                </div>
+                <div class="symptom-item">
+                    <input type="checkbox" id="heartburn">
+                    <label for="heartburn">Heartburn</label>
+                </div>
+                <div class="symptom-item">
+                    <input type="checkbox" id="swelling">
+                    <label for="swelling">Swelling</label>
+                </div>
+                <div class="symptom-item">
+                    <input type="checkbox" id="mood-swings">
+                    <label for="mood-swings">Mood Swings</label>
+                </div>
+            </div>
+            
+            <div class="recommendations">
+                <h3 class="recommendation-title">Personalized Recommendations</h3>
+                <ul class="recommendation-list">
+                    <li>Try ginger tea or crackers for nausea relief</li>
+                    <li>Rest when tired and prioritize sleep</li>
+                    <li>Practice good posture and gentle stretches for back pain</li>
+                    <li>Eat smaller, more frequent meals to manage heartburn</li>
+                    <li>Elevate your feet and stay hydrated to reduce swelling</li>
+                    <li>Talk to your partner or friends about your feelings</li>
+                </ul>
+            </div>
+            
+            <button class="upload-btn" style="margin-top: 20px; width: 100%;">Save & Get More Tips</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container" id="footer">
+            <div class="footer-content">
+                <!-- Company Info Column -->
+                <div class="footer-column">
+                    <h3>SWASTH SARTHI</h3>
+                    <p>Your trusted partner in health and wellness. Empowering your health decisions with AI-powered solutions and natural wellness approaches.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links Column -->
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Services</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Services Column -->
+                <div class="footer-column">
+                    <h3>Our Services</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-baby"></i> BabyCare</a></li>
+                        <li><a href="#"><i class="fas fa-video"></i> InstantCall</a></li>
+                        <li><a href="#"><i class="fas fa-chart-line"></i> Live Report Analysis</a></li>
+                        <li><a href="#"><i class="fas fa-tasks"></i> To-Do Tasks</a></li>
+                        <li><a href="#"><i class="fas fa-user-md"></i> Live Consultation</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Newsletter Column -->
+                <div class="footer-column">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe to our newsletter for the latest health tips, wellness advice, and service updates.</p>
+                    
+                    <div class="subscription-form">
+                        <h4>Subscribe Now</h4>
+                        <form id="newsletter-form">
+                            <div class="form-group">
+                                <input type="text" placeholder="Your Name" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" placeholder="Your Email" required>
+                            </div>
+                            <button type="submit" class="subscribe-btn">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 SWASTH SARTHI. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+
+<script>
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            var weekValue=10;
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const navLinks = document.getElementById('nav-links');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                const icon = mobileMenuBtn.querySelector('i');
+                if (navLinks.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+            
+            // Mood Selection
+            const moodOptions = document.querySelectorAll('.mood-option');
+            const body = document.body;
+            
+            moodOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const mood = this.getAttribute('data-mood');
+                    
+                    // Remove active class from all options
+                    moodOptions.forEach(opt => opt.classList.remove('active'));
+                    
+                    // Add active class to clicked option
+                    this.classList.add('active');
+                    
+                    // Change background based on mood
+                    switch(mood) {
+                        case 'happy':
+                            body.style.backgroundColor = 'var(--happy)';
+                            break;
+                        case 'calm':
+                            body.style.backgroundColor = 'var(--calm)';
+                            break;
+                        case 'energetic':
+                            body.style.backgroundColor = 'var(--energetic)';
+                            break;
+                        default:
+                            body.style.backgroundColor = 'var(--default-bg)';
+                    }
+                });
+            });
+            
+            // Quick Help Modal
+            const quickHelpBtn = document.getElementById('quick-help-btn');
+            const quickHelpModal = document.getElementById('quick-help-modal');
+            const closeModal = document.getElementById('close-modal');
+            
+            quickHelpBtn.addEventListener('click', function() {
+                quickHelpModal.classList.add('active');
+            });
+            
+            closeModal.addEventListener('click', function() {
+                quickHelpModal.classList.remove('active');
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target === quickHelpModal) {
+                    quickHelpModal.classList.remove('active');
+                }
+            });
+            
+            // File Upload Simulation
+            const uploadArea = document.getElementById('upload-area');
+            uploadArea.addEventListener('click', function() {
+                
+                // Simulate AI analysis after upload
+                setTimeout(function() {
+                    const analysisResult = document.querySelector('.analysis-result');
+                    analysisResult.innerHTML = `
+                        <h4 style="color: var(--secondary); margin-bottom: 10px;">Analysis Complete!</h4>
+                        <p>Based on your checkup report:</p>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>Your baby is developing normally</li>
+                            <li>All measurements are within expected ranges</li>
+                            <li>Your health indicators are good</li>
+                            <li>Next checkup recommended in 4 weeks</li>
+                        </ul>
+                        <p style="margin-top: 15px; font-weight: 500;">Keep up with your prenatal vitamins and healthy diet!</p>
+                    `;
+                }, 2000);
+            });
+
+            var progressBar = document.getElementById('progress-bar');
+            var currentWeek=3;
+            var totalWeeks = 40; 
+            var progressPercentage = (currentWeek / totalWeeks) * 100;
+            progressBar.style.width=`${progressPercentage}%`;
+           
+            // gpt
+
+            pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+
+    const fileInput = document.getElementById("pdfFile");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const statusEl = document.getElementById("status");
+    var week = document.getElementById("week");
+    var week2 = document.getElementById("week2");
+    var sizeOfbaby = document.getElementById("sizeOfbaby");
+    var heartRate = document.getElementById("heartRate");
+    var babyLength = document.getElementById("babyLength");
+    var weight = document.getElementById("Weight");
+    var movies = document.getElementById("movies");
+    var food = document.getElementById("food");
+    var physical = document.getElementById("physical");
+    
+    // ⚠️ Paste your OpenAI API key here for LOCAL TESTING ONLY
+    const OPENAI_API_KEY = "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";
+
+    let pdfText = "";
+
+    async function extractTextFromPDF(file) {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let text = "";
+      for (let i = 1; i <= pdf.numPages; i++) {
+        statusEl.textContent = `Extracting page ${i}/${pdf.numPages}...`;
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += content.items.map(it => it.str).join(" ") + "\n\n";
+      }
+      return text.trim();
+    }
+
+    function buildPrompt(text) {
+      return `
+You are a pregnancy report analyzer. Analyze ONLY the text below and return a STRICT JSON object with:
+"weekOfPregnancy","babySizeSentence","heartRate","babyLength","weight","recommendedMovies","nutritionTips","physicalActivities".
+
+- weekOfPregnancy: short like "22"
+- babySizeSentence: two short lines about baby size & organ development
+- heartRate: "120–160 bpm"
+- babyLength: "27 cm"
+- weight: "450 g"
+- recommendedMovies: array of 3–5 Bollywood movie titles
+- nutritionTips: array of 3 short tips
+- physicalActivities: array of 3 safe exercises
+
+If data not found, use "Not specified" or [].
+TEXT START:
+${text}
+TEXT END.
+`;
+    }
+
+    async function callOpenAIDirect(promptText) {
+      const endpoint = "https://api.openai.com/v1/chat/completions";
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: "You are a helpful, concise medical document analyst. Return only valid JSON." },
+            { role: "user", content: promptText }
+          ],
+          temperature: 0.0,
+          max_tokens: 800
+        })
+      });
+      if (!res.ok) {
+        throw new Error(`OpenAI API error ${res.status}: ${await res.text()}`);
+      }
+      const data = await res.json();
+      return data.choices?.[0]?.message?.content || JSON.stringify(data);
+    }
+
+    function parseJSON(text) {
+      try { return JSON.parse(text); }
+      catch {
+        const m = text.match(/\{[\s\S]*\}/);
+        return m ? JSON.parse(m[0]) : null;
+      }
+    }
+
+    uploadBtn.addEventListener("click", async () => {
+      const file = fileInput.files[0];
+      if (!file) return alert("Please choose a PDF file first.");
+     // resultsEl.innerHTML = "";
+     // rawOutput.style.display = "none";
+      statusEl.textContent = "Reading PDF...";
+
+      try {
+        pdfText = await extractTextFromPDF(file);
+        statusEl.textContent = "Sending to OpenAI...";
+        const prompt = buildPrompt(pdfText);
+        const response = await callOpenAIDirect(prompt);
+       // rawOutput.textContent = response;
+
+        const parsed = parseJSON(response);
+        if (!parsed) {
+          statusEl.textContent = "❌ Model didn't return valid JSON. Check raw output.";
+        //  rawOutput.style.display = "block";
+          return;
+        }
+
+        var dueWeek=document.getElementById("dueWeek");
+        const r = parsed;
+        week.innerHTML="week "+r.weekOfPregnancy;
+        dueWeek.innerHTML=40-r.weekOfPregnancy;
+        week2.innerHTML="week "+r.weekOfPregnancy;
+        sizeOfbaby.innerHTML=r.babySizeSentence;
+        heartRate.innerHTML=r.heartRate;
+        babyLength.innerHTML=r.babyLength;
+        weight.innerHTML=r.weight;
+        movies.innerHTML=(r.recommendedMovies || []).join(", ");
+        food.innerHTML=(r.nutritionTips || []).join("; ");
+        physical.innerHTML=(r.physicalActivities || []).join("; ");
+        weekValue=r.weekOfPregnancy;
+        console.log(r.weekOfPregnancy);
+
+        statusEl.textContent = "✅ Analysis complete!";
+             if(statusEl.textContent="✅ Analysis complete!"){
+             var progressPercentage = (weekValue / totalWeeks) * 100;
+            progressBar.style.width=`${progressPercentage}%`;
+        }
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "❌ " + err.message;
+       // alert("Error: " + err.message + "\n\nIf you see a CORS or certificate error, use a backend proxy instead.");
+      }
+    });
+           
+        });
+</script>
+</body>
+</html>

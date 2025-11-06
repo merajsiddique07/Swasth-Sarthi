@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Swasth Sarthi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <div class="logo-text">SWASTH SARTHI</div>
+        </div>
+        <div id="auth-buttons"></div>
+    </nav>
+
+    <section class="profile-section">
+        <h1>Your Profile</h1>
+        <div id="profile-info">
+            <!-- JS se user info render hoga -->
+        </div>
+    </section>
+
+    <script>
+        const backendURL = 'http://localhost:5000/auth';
+
+        console.log("🔹 Profile page JS loaded");
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            console.log("📂 DOM fully loaded");
+
+            const token = localStorage.getItem("token");
+            const authContainer = document.getElementById("auth-buttons");
+
+            if (!token) {
+                console.log("❌ Token missing, redirecting to login");
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Navbar buttons
+            authContainer.innerHTML = `
+                <button id="profileBtn" class="login-signup-btn">Profile</button>
+                <button id="logoutBtn" class="login-signup-btn">Logout</button>
+            `;
+
+            document.getElementById("logoutBtn").addEventListener("click", () => {
+                localStorage.removeItem("token");
+                console.log("✅ Logged out");
+                window.location.href = "login.html";
+            });
+
+            document.getElementById("profileBtn").addEventListener("click", () => {
+                console.log("ℹ️ Already on profile page");
+            });
+
+            try {
+                console.log("🔄 Fetching profile from backend...");
+                const res = await fetch(`${backendURL}/profile`, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const contentType = res.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    throw new Error("❌ Server did not return JSON. Check backend route.");
+                }
+
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.message || "Failed to fetch profile");
+
+                console.log("👤 Profile data received:", data.user);
+
+                const user = data.user;
+                const profileDiv = document.getElementById("profile-info");
+                profileDiv.innerHTML = `
+                    <p><strong>Username:</strong> ${user.username}</p>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p><strong>Gender:</strong> ${user.gender}</p>
+                    <p><strong>Age:</strong> ${user.age}</p>
+                    <p><strong>Phone:</strong> ${user.phone}</p>
+                `;
+            } catch (err) {
+                console.error("⚠️ Error fetching profile:", err);
+                alert(err.message);
+            }
+        });
+    </script>
+</body>
+</html>
+
+

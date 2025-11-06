@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password | HealthCare+</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #256b3b;
+            --secondary: #3390c6;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(37, 107, 59, 0.9) 0%, rgba(51, 144, 198, 0.9) 100%);
+            color: white;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .right-panel {
+            flex: 1;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 32px;
+        }
+
+        .tagline {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .features {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .features li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .features i {
+            margin-right: 10px;
+            color: #a8e6cf;
+        }
+
+        .form-container {
+            width: 100%;
+        }
+
+        .form-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-header h1 {
+            font-size: 32px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: var(--gray);
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .steps::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e0e0e0;
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-circle {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .step.completed .step-circle {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .step.completed .step-circle::after {
+            content: '✓';
+            font-size: 16px;
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-align: center;
+        }
+
+        .step.active .step-label {
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .form {
+            display: none;
+        }
+
+        .form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(51, 144, 198, 0.2);
+        }
+
+        .code-inputs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .code-input {
+            width: 50px;
+            height: 60px;
+            text-align: center;
+            font-size: 24px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .code-input:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(51, 144, 198, 0.2);
+        }
+
+        .password-strength {
+            height: 5px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .password-weak {
+            background-color: #e74c3c;
+            width: 30%;
+        }
+
+        .password-medium {
+            background-color: #f39c12;
+            width: 60%;
+        }
+
+        .password-strong {
+            background-color: #2ecc71;
+            width: 100%;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .back-to-login {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-to-login a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-to-login a:hover {
+            text-decoration: underline;
+        }
+
+        .resend-code {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .resend-code a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .resend-code a:hover {
+            text-decoration: underline;
+        }
+
+        .resend-code .countdown {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8fff9;
+            border-radius: 8px;
+            border: 1px solid #e1f5e1;
+            margin-bottom: 20px;
+        }
+
+        .success-icon {
+            font-size: 48px;
+            color: #2ecc71;
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .left-panel {
+                padding: 30px;
+            }
+            
+            .right-panel {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .left-panel, .right-panel {
+                padding: 25px 20px;
+            }
+            
+            .form-header h1 {
+                font-size: 28px;
+            }
+            
+            .code-inputs {
+                gap: 5px;
+            }
+            
+            .code-input {
+                width: 40px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .step-label {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                Swasth Sarthi
+            </div>
+            <p class="tagline">Your health, our priority. We're here to help you regain access to your account.</p>
+            
+            <ul class="features">
+                <li><i class="fas fa-shield-alt"></i> Secure password reset process</li>
+                <li><i class="fas fa-envelope"></i> Verification code sent to your email</li>
+                <li><i class="fas fa-lock"></i> Create a strong new password</li>
+                <li><i class="fas fa-check-circle"></i> Quick and easy account recovery</li>
+            </ul>
+        </div>
+        
+        <div class="right-panel">
+            <div class="form-container">
+                <div class="form-header">
+                    <h1>Reset Your Password</h1>
+                    <p>Follow these steps to secure your account</p>
+                </div>
+                
+                <div class="steps">
+                    <div class="step active" id="step-1">
+                        <div class="step-circle">1</div>
+                        <div class="step-label">Enter Email</div>
+                    </div>
+                    <div class="step" id="step-2">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">Verify Code</div>
+                    </div>
+                    <div class="step" id="step-3">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">New Password</div>
+                    </div>
+                </div>
+                
+                <!-- Step 1: Enter Email -->
+                <form id="email-form" class="form active">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" class="form-control" placeholder="Enter your email address" required>
+                        </div>
+                        <div class="error-message" id="email-error"></div>
+                    </div>
+                    
+                    <p style="color: var(--gray); font-size: 14px; margin-bottom: 20px;">
+                        We'll send a verification code to this email address to reset your password.
+                    </p>
+                    
+                    <button type="submit" class="submit-btn">Send Verification Code</button>
+                    
+                    <div class="back-to-login">
+                        <a href="#"><i class="fas fa-arrow-left"></i> Back to Login</a>
+                    </div>
+                </form>
+                
+                <!-- Step 2: Verify Code -->
+                <form id="code-form" class="form">
+                    <div class="form-group">
+                        <label for="code">Verification Code</label>
+                        <div class="code-inputs">
+                            <input type="text" class="code-input" maxlength="1" required>
+                            <input type="text" class="code-input" maxlength="1" required>
+                            <input type="text" class="code-input" maxlength="1" required>
+                            <input type="text" class="code-input" maxlength="1" required>
+                            <input type="text" class="code-input" maxlength="1" required>
+                            <input type="text" class="code-input" maxlength="1" required>
+                        </div>
+                        <div class="error-message" id="code-error"></div>
+                    </div>
+                    
+                    <p style="color: var(--gray); font-size: 14px; margin-bottom: 20px;">
+                        Enter the 6-digit code sent to your email address.
+                    </p>
+                    
+                    <div class="resend-code">
+                        <div class="countdown" id="countdown">Resend code in 1:00</div>
+                        <a href="#" id="resend-link" style="display: none;">Resend code</a>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Verify Code</button>
+                    
+                    <div class="back-to-login">
+                        <a href="#"><i class="fas fa-arrow-left"></i> Back to Login</a>
+                    </div>
+                </form>
+                
+                <!-- Step 3: New Password -->
+                <form id="password-form" class="form">
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="new-password" class="form-control" placeholder="Create a new password" required>
+                        </div>
+                        <div class="password-strength">
+                            <div class="password-strength-bar" id="password-strength-bar"></div>
+                        </div>
+                        <div class="error-message" id="new-password-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm-new-password">Confirm New Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="confirm-new-password" class="form-control" placeholder="Confirm your new password" required>
+                        </div>
+                        <div class="error-message" id="confirm-password-error"></div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Reset Password</button>
+                    
+                    <div class="back-to-login">
+                        <a href="#"><i class="fas fa-arrow-left"></i> Back to Login</a>
+                    </div>
+                </form>
+                
+                <!-- Success Message -->
+                <div id="success-message" class="success-message" style="display: none;">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>Password Reset Successful!</h3>
+                    <p>Your password has been reset successfully. You can now log in with your new password.</p>
+                    <button type="button" class="submit-btn" style="margin-top: 15px;" id="go-to-login">Go to Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const emailForm = document.getElementById('email-form');
+            const codeForm = document.getElementById('code-form');
+            const passwordForm = document.getElementById('password-form');
+            const successMessage = document.getElementById('success-message');
+            const forms = document.querySelectorAll('.form');
+            const steps = document.querySelectorAll('.step');
+            const codeInputs = document.querySelectorAll('.code-input');
+            const newPasswordInput = document.getElementById('new-password');
+            const passwordStrengthBar = document.getElementById('password-strength-bar');
+            const countdownElement = document.getElementById('countdown');
+            const resendLink = document.getElementById('resend-link');
+            const goToLoginBtn = document.getElementById('go-to-login');
+            
+            let countdown;
+            let countdownTime = 60; // 60 seconds
+            
+            // Form validation functions
+            function showError(elementId, message) {
+                const errorElement = document.getElementById(elementId);
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+            
+            function hideError(elementId) {
+                const errorElement = document.getElementById(elementId);
+                errorElement.style.display = 'none';
+            }
+            
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            // Step navigation
+            function goToStep(stepNumber) {
+                // Update steps
+                steps.forEach((step, index) => {
+                    if (index < stepNumber - 1) {
+                        step.classList.add('completed');
+                        step.classList.remove('active');
+                    } else if (index === stepNumber - 1) {
+                        step.classList.add('active');
+                        step.classList.remove('completed');
+                    } else {
+                        step.classList.remove('active', 'completed');
+                    }
+                });
+                
+                // Show corresponding form
+                forms.forEach(form => form.classList.remove('active'));
+                document.getElementById(['email-form', 'code-form', 'password-form'][stepNumber - 1]).classList.add('active');
+            }
+            
+            // Code input navigation
+            codeInputs.forEach((input, index) => {
+                input.addEventListener('input', function() {
+                    // Auto-focus next input
+                    if (this.value.length === 1 && index < codeInputs.length - 1) {
+                        codeInputs[index + 1].focus();
+                    }
+                    
+                    // Validate all inputs are filled
+                    const allFilled = Array.from(codeInputs).every(input => input.value.length === 1);
+                    if (allFilled) {
+                        document.querySelector('#code-form .submit-btn').disabled = false;
+                    }
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    // Handle backspace to focus previous input
+                    if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+                        codeInputs[index - 1].focus();
+                    }
+                });
+            });
+            
+            // Password strength indicator
+            newPasswordInput.addEventListener('input', function() {
+                const password = this.value;
+                let strength = 0;
+                
+                if (password.length >= 8) strength++;
+                if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+                if (password.match(/\d/)) strength++;
+                if (password.match(/[^a-zA-Z\d]/)) strength++;
+                
+                // Update strength bar
+                passwordStrengthBar.className = 'password-strength-bar';
+                if (strength <= 1) {
+                    passwordStrengthBar.classList.add('password-weak');
+                } else if (strength <= 3) {
+                    passwordStrengthBar.classList.add('password-medium');
+                } else {
+                    passwordStrengthBar.classList.add('password-strong');
+                }
+            });
+            
+            // Countdown timer for resend code
+            function startCountdown() {
+                countdownTime = 60;
+                countdownElement.textContent = `Resend code in 1:00`;
+                resendLink.style.display = 'none';
+                
+                countdown = setInterval(function() {
+                    countdownTime--;
+                    
+                    const minutes = Math.floor(countdownTime / 60);
+                    const seconds = countdownTime % 60;
+                    
+                    countdownElement.textContent = `Resend code in ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (countdownTime <= 0) {
+                        clearInterval(countdown);
+                        countdownElement.style.display = 'none';
+                        resendLink.style.display = 'block';
+                    }
+                }, 1000);
+            }
+            
+            // Email form submission
+            emailForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                
+                // Reset errors
+                hideError('email-error');
+                
+                // Validate email
+                if (!email) {
+                    showError('email-error', 'Email address is required');
+                    return;
+                } else if (!validateEmail(email)) {
+                    showError('email-error', 'Please enter a valid email address');
+                    return;
+                }
+                
+                // In a real application, you would send a request to your backend
+                // to generate and send a verification code
+                
+                // Simulate API call
+                setTimeout(function() {
+                    // Move to next step
+                    goToStep(2);
+                    
+                    // Start countdown for resend code
+                    startCountdown();
+                }, 1000);
+            });
+            
+            // Code form submission
+            codeForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get the code from inputs
+                const code = Array.from(codeInputs).map(input => input.value).join('');
+                
+                // Reset errors
+                hideError('code-error');
+                
+                // Validate code
+                if (code.length !== 6) {
+                    showError('code-error', 'Please enter the complete 6-digit code');
+                    return;
+                }
+                
+                // In a real application, you would verify the code with your backend
+                
+                // Simulate API call
+                setTimeout(function() {
+                    // Move to next step
+                    goToStep(3);
+                }, 1000);
+            });
+            
+            // Password form submission
+            passwordForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-new-password').value;
+                
+                // Reset errors
+                hideError('new-password-error');
+                hideError('confirm-password-error');
+                
+                // Validate password
+                if (!newPassword) {
+                    showError('new-password-error', 'Password is required');
+                    return;
+                } else if (newPassword.length < 8) {
+                    showError('new-password-error', 'Password must be at least 8 characters');
+                    return;
+                }
+                
+                // Validate confirm password
+                if (!confirmPassword) {
+                    showError('confirm-password-error', 'Please confirm your password');
+                    return;
+                } else if (newPassword !== confirmPassword) {
+                    showError('confirm-password-error', 'Passwords do not match');
+                    return;
+                }
+                
+                // In a real application, you would send the new password to your backend
+                
+                // Simulate API call
+                setTimeout(function() {
+                    // Show success message
+                    forms.forEach(form => form.classList.remove('active'));
+                    successMessage.style.display = 'block';
+                }, 1000);
+            });
+            
+            // Resend code
+            resendLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // In a real application, you would request a new code from your backend
+                
+                // Start countdown again
+                startCountdown();
+            });
+            
+            // Go to login
+            goToLoginBtn.addEventListener('click', function() {
+                // In a real application, you would redirect to the login page
+               // alert('Redirecting to login page...');
+                 window.location.href = 'login.html';
+            });
+            
+            // Back to login links
+            document.querySelectorAll('.back-to-login a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // In a real application, you would redirect to the login page
+                     window.location.href = 'login.html';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
