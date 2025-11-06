@@ -1,73 +1,65 @@
 # Swasth-Sarthi
-Project Description — Swasth Sarthi: Health’s Guide with AI
+# 🩺 Swasth Sarthi — Health’s Guide with AI
 
-Swasth Sarthi is an AI-powered holistic healthcare platform designed to empower individuals and families to take charge of their physical, emotional, and preventive health.
-It serves as a digital health companion — combining personalized tracking, pregnancy care support, instant medical access, and live health analytics in one seamless interface.
+**Swasth Sarthi** is an AI-powered **holistic digital healthcare platform** that empowers users to monitor wellness, get instant doctor support, and analyze pregnancy or medical reports through artificial intelligence.  
+It combines **AI, OCR, and real-time communication** technologies to create an accessible health companion that guides users in preventive and personalized healthcare.
 
-💡 Key Features and Functionalities
+---
 
-BabyCare Assistant:
+## 🚩 Problem Statement
 
-Upload pregnancy checkup reports (PDF format).
+In India and many parts of the world, users face challenges such as:
+- ⏱️ **Delayed access to medical guidance** during emergencies.  
+- 📄 **Scattered and hard-to-interpret medical reports.**  
+- 🤰 **Limited pregnancy tracking tools** with AI-based insights.  
+- 📉 **Lack of unified preventive care systems** for individuals and families.  
+- 🧠 **Absence of real-time analytics** and health awareness in daily routines.  
 
-Uses AI + OCR (pdf.js, Tesseract.js) to extract data and generate personalized insights like baby’s growth stage, week of pregnancy, nutrition tips, and safe activities.
+---
 
-Interactive mood selector and symptom-based recommendations.
+## 💡 Solution Approach
 
-InstantCall (Emergency Doctor Connect):
+**Swasth Sarthi** provides a one-stop AI health ecosystem that addresses these gaps by integrating smart tools such as:
+1. **BabyCare Assistant:**  
+   - Upload pregnancy checkup reports (PDF).  
+   - AI analyzes the data and displays the pregnancy week, baby size, heart rate, and health tips.  
+   - Suggests nutrition, activities, and movies for emotional wellness.
 
-Enables users to connect with a certified doctor within 60 seconds via live video call using WebRTC technology.
+2. **InstantCall:**  
+   - Connects users with doctors in **under 60 seconds** via a live video call.  
+   - Useful in emergencies or when immediate consultation is needed.
 
-Designed for accidents and medical emergencies where immediate pre-treatment guidance can save lives.
+3. **Live Health Report Analysis:**  
+   - Extracts data from PDF reports using **pdf.js** and **Tesseract.js**.  
+   - AI generates **real-time analytics** and wellness insights using **Chart.js**.
 
-Live Health Report Analysis:
+4. **To-Do Health Tracker:**  
+   - Daily planner for hydration, medication, physical activities, and sleep.  
+   - Boosts health consistency and accountability.
 
-AI analyzes chat records and report data to detect health trends, generate wellness scores, and provide visualized analytics using Chart.js.
+5. **AI Health Chat Assistant:**  
+   - Chatbot powered by **OpenAI GPT-4o** for instant health-related Q&A.  
+   - Can interpret health terms, give symptom insights, and suggest actions.
 
-Offers users data-driven insights into their physical and emotional well-being.
+---
 
-To-Do Health Tracker:
+## 🧠 Technology Stack Used
 
-Daily task list for physical exercises, medication reminders, hydration tracking, and wellness habits.
+| Category | Technologies |
+|-----------|--------------|
+| **Frontend** | HTML5, CSS3, JavaScript, Font Awesome |
+| **AI & NLP** | OpenAI GPT-4o (Chat Completion API) |
+| **Document Processing** | pdf.js, Tesseract.js (OCR for PDF & image-based reports) |
+| **Charts & Visualization** | Chart.js |
+| **Backend (Recommended)** | Node.js / Django REST Framework |
+| **Real-Time Communication** | WebRTC (Instant video call feature) |
+| **Hosting / Deployment** | Render, Vercel, GitHub Pages |
 
-Helps users build healthy routines through consistent engagement.
+---
 
-AI Chat Assistant:
+## ⚙️ Setup / Installation Instructions
 
-Integrated medical chatbot powered by OpenAI’s GPT-based API, enabling natural, conversational health queries and guidance.
-
-⚙️ Technologies Used
-
-Frontend: HTML5, CSS3, JavaScript, Font Awesome
-
-AI & NLP: OpenAI GPT-4o model for intelligent report analysis and conversation
-
-Document Processing: pdf.js, Tesseract.js for extracting data from medical reports
-
-Data Visualization: Chart.js for generating wellness graphs and analysis charts
-
-Backend (recommended): Node.js or Django for APIs, authentication, and data management
-
-Video Communication: WebRTC for real-time video calling between user and doctor
-
-Deployment: Render / Vercel for hosting frontend and backend services
-
-🧠 Data Sources
-
-Pregnancy checkup reports (PDF format) uploaded by users
-
-User-generated chat history and symptom data
-
-AI-generated insights and recommendations (via OpenAI API)
-
-📊 Findings & Learnings
-
-AI can simplify healthcare interpretation: Automated PDF analysis reduces dependency on manual medical interpretation.
-
-User experience matters in health apps: A clean, emotional, and responsive design builds trust and engagement.
-
-Integrating AI + WebRTC + OCR technologies creates a powerful hybrid system for real-time preventive healthcare.
-
-Challenges faced: API key restrictions (CORS), integrating live video systems, and managing sensitive data securely.
-
-Key learning: Combining empathy-driven design with AI-driven functionality results in meaningful digital health experiences.
+### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/username/swasth-sarthi.git
+cd swasth-sarthi
